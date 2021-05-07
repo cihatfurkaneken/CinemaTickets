@@ -1,99 +1,134 @@
 import 'package:flutter/material.dart';
 
-class giris extends StatelessWidget {
+class giris extends StatefulWidget {
+  @override
+  _girisState createState() => _girisState();
+}
+
+class _LoginData {
+  String email = '';
+  String password = '';
+}
+
+class _girisState extends State<giris> {
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     double genislik = MediaQuery.of(context).size.width;
     double yukseklik = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40.0),
-        child: AppBar(
-          backgroundColor: Color(0xffff7e7e),
-          elevation: 3.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(30.0),
-              bottomLeft: Radius.circular(30.0),
-            ),
-          ),
-          actions: <Widget>[
-            IconButton(
-                icon: const Icon(
-                  Icons.menu,
-                  size: 38,
+      backgroundColor: Color(0xffF4F3F9),
+      body: Center(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: yukseklik * 0.15),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+                child: Text("Sinema Bilet Satış Giriş",
+                    style: TextStyle(fontSize: 34, color: Colors.black)),
+              ),
+              SizedBox(height: 30),
+              Container(
+                width: genislik * 0.75,
+                height: yukseklik * 0.35,
+                child: Form(
+                  child: Column(
+                    key: _formKey,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.circular(19.0),
+                          ),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(left: 15, right: 15, top: 5),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText: 'Kullanıcı Adı',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Stack(
+                          alignment: const Alignment(0, 0),
+                          children: <Widget>[
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: new BorderRadius.circular(19.0),
+                                ),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 15, right: 15, top: 5),
+                                    child: TextFormField(
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          labelText: 'Şifre',
+                                        )))),
+                            Positioned(
+                                right: 15,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      // _controller.clear();
+                                    },
+                                    child: Text('Göster')))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            height: 45,
+                            width: genislik * 0.3,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(21.0),
+                                ),
+                                primary: Color(0xffFF7E7E),
+                              ),
+                              //color: Color(0xffFF7E7E),
+                              onPressed: () {
+                                // Validate returns true if the form is valid, or false
+                                // otherwise.
+                                if (_formKey.currentState.validate()) {
+                                  // If the form is valid, display a Snackbar.
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Processing Data')));
+                                }
+                              },
+                              child: Text(
+                                'Giris',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
-                tooltip: 'menu',
-                onPressed: () {
-                  // _settingModalBottomSheet(context);
-                },
-                padding: EdgeInsets.symmetric(horizontal: 36)),
-          ],
-          centerTitle: true,
-          title: Text(
-            "Kart Oyunu",
-            style: TextStyle(fontSize: 24),
+              ),
+
+              /*Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+                child: Text(
+                    "By continuing you agree Terms of Services & Privacy Policy",
+                    style: TextStyle(fontSize: 21, color: Colors.redAccent)),
+              ),*/
+            ],
           ),
         ),
       ),
     );
   }
-}
-
-void _settingModalBottomSheet(context) {
-  showModalBottomSheet(
-      //barrierColor: Colors.greenAccent,
-      //background color for modal bottom screen
-      backgroundColor: Color(0xffff7e7e),
-      //elevates modal bottom screen
-      elevation: 10,
-      // gives rounded corner to modal bottom screen
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(28.0),
-          topRight: Radius.circular(28.0),
-        ),
-      ),
-      context: context,
-      builder: (BuildContext bc) {
-        return Container(
-          padding: EdgeInsets.all(10),
-          child: new Wrap(
-            children: <Widget>[
-              new ListTile(
-                  leading: new Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.white,
-                  ),
-                  title: new Text(
-                    'Geri Dön',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () => {}),
-              new ListTile(
-                leading: new Icon(
-                  Icons.report_problem,
-                  color: Colors.white,
-                ),
-                title: new Text(
-                  'Bildir',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: () => {},
-              ),
-              new ListTile(
-                leading: new Icon(
-                  Icons.table_chart,
-                  color: Colors.white,
-                ),
-                title: new Text(
-                  'Skor Tablosu',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: () => {},
-              ),
-            ],
-          ),
-        );
-      });
 }
