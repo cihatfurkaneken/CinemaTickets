@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "463227870200",
+    "firebase_url": "https://sinema-a5854-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "sinema-a5854",
+    "storage_bucket": "sinema-a5854.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463227870200:android:cb0795aa256ad5f9a3d40d",
+        "android_client_info": {
+          "package_name": "com.cfurkan.sinemabilet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463227870200-llm2a6623f5dlv5l4ph49k94csvdtqf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP6mt5z0Hwa_mDeOmJbzMQBhILo81WCR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "463227870200-llm2a6623f5dlv5l4ph49k94csvdtqf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

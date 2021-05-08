@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sinemabilet/views/anaekran.dart';
 import 'package:sinemabilet/views/giris.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: giris(),
+      home: anaekran(),
     );
   }
 }
