@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sinemabilet/views/BiletSecimi.dart';
 
 class biletal extends StatelessWidget {
   final List<String> numbers = ["JOKER", "TOGO", "Fenerbahçe", "Soldierbirth"];
@@ -76,7 +77,9 @@ class biletal extends StatelessWidget {
                     ),
                     child: Center(
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.of(context).push(
+                          BiletSecimi.route(),
+                        ),
                         style: TextButton.styleFrom(
                           primary: Colors.white,
                           textStyle: TextStyle(

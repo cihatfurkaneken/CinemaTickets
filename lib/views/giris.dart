@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class giris extends StatefulWidget {
+  static Route<dynamic> route() => MaterialPageRoute(
+        builder: (context) => giris(),
+      );
   @override
   _girisState createState() => _girisState();
 }
@@ -12,7 +15,7 @@ class _LoginData {
 
 class _girisState extends State<giris> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-
+  bool goster = true;
   @override
   Widget build(BuildContext context) {
     double genislik = MediaQuery.of(context).size.width;
@@ -71,7 +74,7 @@ class _girisState extends State<giris> {
                                     padding: EdgeInsets.only(
                                         left: 15, right: 15, top: 5),
                                     child: TextFormField(
-                                        obscureText: true,
+                                        obscureText: goster,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
                                           labelText: 'Şifre',
@@ -80,7 +83,10 @@ class _girisState extends State<giris> {
                                 right: 15,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      // _controller.clear();
+                                      goster == true
+                                          ? goster = false
+                                          : goster = true;
+                                      setState(() {});
                                     },
                                     child: Text('Göster')))
                           ],

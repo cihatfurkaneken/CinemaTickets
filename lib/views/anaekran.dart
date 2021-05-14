@@ -4,12 +4,21 @@ import 'package:sinemabilet/views/bilet.dart';
 import 'package:sinemabilet/views/populer.dart';
 
 class anaekran extends StatefulWidget {
+  static Route<dynamic> route() => MaterialPageRoute(
+        builder: (context) => anaekran(),
+      );
   @override
   _anaekranState createState() => _anaekranState();
 }
 
 class _anaekranState extends State<anaekran> {
   int selectedPos = 0;
+  final List<String> movi = [
+    "lib/views/joker.jpg",
+    "lib/views/togo.jpg",
+    "lib/views/int.jpg",
+    "lib/views/inc.jpg"
+  ];
 
   final tabItems = [
     FancyBottomItem(title: Text("Satın Al"), icon: Icon(Icons.theaters)),
@@ -22,13 +31,6 @@ class _anaekranState extends State<anaekran> {
     double genislik = MediaQuery.of(context).size.width;
     double yukseklik = MediaQuery.of(context).size.height;
     return Scaffold(
-        bottomNavigationBar: FancyBottomBar(
-          onItemSelected: (i) => setState(() => selectedPos = i),
-          items: tabItems,
-          selectedPosition: selectedPos,
-          selectedColor: Colors.amber,
-          indicatorColor: Colors.deepPurple,
-        ),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
@@ -78,17 +80,29 @@ class _anaekranState extends State<anaekran> {
                         children: <Widget>[
                           Row(
                             children: <Widget>[
-                              populer(),
+                              populer(
+                                pictureUrl: movi[0],
+                                title: 'Interstellar',
+                              ),
                               SizedBox(width: genislik * 0.12),
-                              populer(),
+                              populer(
+                                pictureUrl: movi[1],
+                                title: 'adsfasdf',
+                              ),
                             ],
                           ),
                           SizedBox(height: 20),
                           Row(
                             children: <Widget>[
-                              populer(),
+                              populer(
+                                pictureUrl: movi[2],
+                                title: 'sdfgsdfg',
+                              ),
                               SizedBox(width: genislik * 0.12),
-                              populer(),
+                              populer(
+                                pictureUrl: movi[3],
+                                title: 'qweqweq',
+                              ),
                             ],
                           )
                         ],
