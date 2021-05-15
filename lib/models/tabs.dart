@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sinemabilet/views/anaekran.dart';
+import 'package:sinemabilet/views/ayarlar.dart';
 import 'package:sinemabilet/views/giris.dart';
 import 'package:sinemabilet/views/sinema.dart';
 
@@ -18,18 +19,18 @@ class TabNavigationItem {
   static List<TabNavigationItem> get items => [
         TabNavigationItem(
           page: anaekran(),
-          icon: Icon(Icons.home),
-          title: "Home",
+          icon: Icon(Icons.movie),
+          title: "Satın Al",
         ),
         TabNavigationItem(
           page: sinema(),
-          icon: Icon(Icons.shopping_basket),
-          title: "Shop",
+          icon: Icon(Icons.theaters),
+          title: "Sinemalar",
         ),
         TabNavigationItem(
-          page: giris(),
-          icon: Icon(Icons.search),
-          title: "Search",
+          page: ayarlar(),
+          icon: Icon(Icons.account_circle),
+          title: "Kullanıcı",
         ),
       ];
 }

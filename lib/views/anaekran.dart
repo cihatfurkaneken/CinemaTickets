@@ -14,10 +14,10 @@ class anaekran extends StatefulWidget {
 class _anaekranState extends State<anaekran> {
   int selectedPos = 0;
   final List<String> movi = [
-    "lib/views/joker.jpg",
-    "lib/views/togo.jpg",
-    "lib/views/int.jpg",
-    "lib/views/inc.jpg"
+    "lib/views/images/joker.jpg",
+    "lib/views/images/togo.jpg",
+    "lib/views/images/int.jpg",
+    "lib/views/images/inc.jpg"
   ];
 
   final tabItems = [
@@ -63,6 +63,7 @@ class _anaekranState extends State<anaekran> {
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
                   ),
+                  Divider(),
                   biletal(),
                   Text(
                     "Popüler Filmler",
@@ -71,6 +72,7 @@ class _anaekranState extends State<anaekran> {
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
                   ),
+                  Divider(),
                   Padding(
                     padding: EdgeInsets.all(25),
                     child: Container(

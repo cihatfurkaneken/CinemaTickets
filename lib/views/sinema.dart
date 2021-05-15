@@ -10,19 +10,19 @@ class sinema extends StatelessWidget {
   List<Person> persons = [
     Person(
         name: 'Site Sinemaları',
-        profileImg: 'lib/views/joker.jpg',
+        profileImg: 'lib/views/images/joker.jpg',
         bio: "Yemek, VMAX, Dolby, 3D"),
     Person(
         name: 'CineMaximum Akasya',
-        profileImg: 'lib/views/inc.jpg',
+        profileImg: 'lib/views/images/inc.jpg',
         bio: "3D, Popcorn, Çift Koltuk"),
     Person(
         name: 'CinemaVip Bakırköy',
-        profileImg: 'lib/views/togo.jpg',
+        profileImg: 'lib/views/images/togo.jpg',
         bio: "DMAX, 3D ,Konfor "),
     Person(
         name: 'Gebze Sinemaları',
-        profileImg: 'lib/views/int.jpg',
+        profileImg: 'lib/views/images/int.jpg',
         bio: "Yemek, VMAX, Dolby, 3Dr ")
   ];
   Widget personDetailCard(Person, BuildContext context) {

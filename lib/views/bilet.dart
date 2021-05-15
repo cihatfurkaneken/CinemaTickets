@@ -4,10 +4,10 @@ import 'package:sinemabilet/views/BiletSecimi.dart';
 class biletal extends StatelessWidget {
   final List<String> numbers = ["JOKER", "TOGO", "Fenerbahçe", "Soldierbirth"];
   final List<String> movi = [
-    "lib/views/joker.jpg",
-    "lib/views/togo.jpg",
-    "lib/views/int.jpg",
-    "lib/views/inc.jpg"
+    "lib/views/images/joker.jpg",
+    "lib/views/images/togo.jpg",
+    "lib/views/images/int.jpg",
+    "lib/views/images/inc.jpg"
   ];
   @override
   Widget build(BuildContext context) {

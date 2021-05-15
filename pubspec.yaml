@@ -48,11 +48,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-      - lib/views/joker.jpg 
-      - lib/views/togo.jpg 
-      - lib/views/int.jpg 
-      - lib/views/inc.jpg 
-  #   - images/a_dot_ham.jpeg
+      - lib/views/images/joker.jpg 
+      - lib/views/images/togo.jpg 
+      - lib/views/images/int.jpg 
+      - lib/views/images/inc.jpg 
+      - lib/views/images/sinema.jpg
+  #   
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
