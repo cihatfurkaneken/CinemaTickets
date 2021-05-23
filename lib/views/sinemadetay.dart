@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sinemabilet/models/Sinema.dart';
 import 'package:sinemabilet/views/bilet.dart';
 
 class sinemadetay extends StatelessWidget {
   static Route<dynamic> route() => MaterialPageRoute(
         builder: (context) => sinemadetay(),
       );
+  final Sinema entry;
+  sinemadetay({this.entry});
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +40,14 @@ class sinemadetay extends StatelessWidget {
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
                 ),
-                child: Image.network('lib/views/images/sinema.jpg',
+                child: Image.network(entry.resim,
                     width: genislik * 0.95,
                     height: yukseklik * 0.25,
                     fit: BoxFit.fill),
               ),
               SizedBox(height: 30),
               Text(
-                "Site Sinemaları",
+                entry.SinemaAdi,
                 style: TextStyle(fontSize: 24),
                 textAlign: TextAlign.center,
               ),
@@ -53,9 +56,7 @@ class sinemadetay extends StatelessWidget {
                 children: <Widget>[
                   Icon(Icons.location_on),
                   SizedBox(width: 10),
-                  Flexible(
-                      child: Text(
-                          "Yenibosna Zafer Mahallesi, Değrimenbahçe Caddesi, No:10, Bahçelievler/İstanbul")),
+                  Flexible(child: Text(entry.Adres)),
                 ],
               ),
               SizedBox(height: 30),
@@ -63,7 +64,7 @@ class sinemadetay extends StatelessWidget {
                 children: <Widget>[
                   Icon(Icons.phone),
                   SizedBox(width: 10),
-                  Text("(0212) 456 7898")
+                  Text(entry.Telefon)
                 ],
               ),
               SizedBox(height: 30),
@@ -71,7 +72,7 @@ class sinemadetay extends StatelessWidget {
                 children: <Widget>[
                   Icon(Icons.language),
                   SizedBox(width: 10),
-                  Text("www.sitesinemalari.com")
+                  Text(entry.Bilgi)
                 ],
               ),
               SizedBox(height: 30),

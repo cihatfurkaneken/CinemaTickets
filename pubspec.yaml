@@ -1,5 +1,5 @@
 name: sinemabilet
-description: A new Flutter project.
+description: Sinema Bilet Satisi Uygulamasi
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -30,10 +30,30 @@ dependencies:
   cupertino_icons: ^1.0.2
   fancy_bottom_bar: ^0.0.1  
   intl: ^0.17.0
-
+  firebase_core: ^1.1.1
+  cloud_firestore: ^2.1.0
+  firebase_auth: ^1.1.4
+  provider: ^5.0.0
+  uuid: ^3.0.4
+  
+   
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^1.1.8+4
+
+  flutter_launcher_icons: ^0.9.0
+
+flutter_native_splash:
+   color: "#F4F3F9"
+   image: lib/views/images/splash.png
+   android: true
+   ios: true  
+
+flutter_icons:
+  image_path: "lib/views/images/splash.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -53,6 +73,8 @@ flutter:
       - lib/views/images/int.jpg 
       - lib/views/images/inc.jpg 
       - lib/views/images/sinema.jpg
+      - lib/views/images/screen.png
+      - lib/views/images/splash.png
   #   
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,16 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sinemabilet/components/calendar_day.dart';
 import 'package:sinemabilet/components/cienma_seat.dart';
 import 'package:sinemabilet/components/show_time.dart';
 import 'package:intl/intl.dart';
+import 'package:sinemabilet/models/Film.dart';
+import 'package:sinemabilet/models/Koltuk.dart';
+import 'package:sinemabilet/models/Sinema.dart';
+import 'package:sinemabilet/services/firestore_service.dart';
 
 class BiletSecimi extends StatefulWidget {
   static Route<dynamic> route() => MaterialPageRoute(
         builder: (context) => BiletSecimi(),
       );
   bool secilen;
-
   bool secilmeyen;
+  final Film entry;
+  BiletSecimi({this.entry});
+
+  List<Widget> getRandomWidgetArray(AsyncSnapshot<List<Koltuk>> snapshot) {
+    List<Widget> lines = [];
+    int satir = 1;
+    for (var i = 1; i <= 1; i++) {
+      List<Widget> gameCells = [];
+      for (var j = 1; j < snapshot.data.length; j++) {
+        gameCells.add(CienmaSeat(
+            numara: snapshot.data[satir].KoltukNo,
+            isReserved: snapshot.data[satir].Doluluk));
+        satir++;
+      }
+      lines.add(Wrap(children: gameCells));
+    }
+    return lines;
+  }
+
   @override
   _BiletSecimiState createState() => _BiletSecimiState();
 }
@@ -25,7 +48,10 @@ class _BiletSecimiState extends State<BiletSecimi> {
   final BoxDecoration kRoundedFadedBorder = BoxDecoration(
       border: Border.all(color: Colors.white54, width: .5),
       borderRadius: BorderRadius.circular(15.0));
-
+  final firestoreInstance = FirebaseFirestore.instance;
+  int abcd = 9;
+  int cbc = 10;
+  String _selectedLocation; // Option 2
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,14 +70,17 @@ class _BiletSecimiState extends State<BiletSecimi> {
           title: Text("Satın Al"),
         ),
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
+        //scrollDirection: Axis.vertical,
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text("Tarih Secimi"),
+            SizedBox(height: 10),
+            Center(child: Text("Tarih Seçimi")),
             Container(
               margin: EdgeInsets.symmetric(vertical: 10.0),
-              width: MediaQuery.of(context).size.width * .9,
+              width: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
                 color: Color(0xffFF7E7E),
                 borderRadius: BorderRadius.only(
@@ -93,7 +122,7 @@ class _BiletSecimiState extends State<BiletSecimi> {
                 ),
               ),
             ),
-            Text("Seans Secimi"),
+            Center(child: Text("Seans Seçimi")),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -126,6 +155,42 @@ class _BiletSecimiState extends State<BiletSecimi> {
                 ],
               ),
             ),
+            Center(
+              child: StreamBuilder<List<Sinema>>(
+                  stream: FirestroeService.readTodos(),
+                  builder: (context, snapshot) {
+                    List<DropdownMenuItem> currencyItems = [];
+                    for (int i = 0; i < snapshot.data.length; i++) {
+                      Sinema snap = snapshot.data[i];
+                      currencyItems.add(
+                        DropdownMenuItem(
+                          child: Text(
+                            snap.SinemaAdi,
+                            style: TextStyle(color: Color(0xff11b719)),
+                          ),
+                          value: "${snap.SinemaAdi}",
+                        ),
+                      );
+                    }
+                    return DropdownButton(
+                      items: currencyItems,
+                      icon: const Icon(Icons.arrow_downward),
+                      elevation: 16,
+                      underline: Container(
+                        height: 2,
+                        color: Colors.redAccent,
+                      ),
+                      hint: Text('Sinema Seçiniz'),
+                      value: _selectedLocation,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedLocation = newValue;
+                        });
+                        print(_selectedLocation);
+                      },
+                    );
+                  }),
+            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -136,207 +201,109 @@ class _BiletSecimiState extends State<BiletSecimi> {
                     color: Colors.redAccent,
                     size: 25.0,
                   ),
-                  SizedBox(width: 20.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(width: 10.0),
+                  Row(
                     children: <Widget>[
-                      Text('Site Sinemaları'),
-                      Text('Yenibosna, Istanbul',
-                          style:
-                              TextStyle(color: Colors.black, fontSize: 18.0)),
-                      SizedBox(height: 10.0),
-                      Row(
-                        children: <Widget>[
-                          Text('2D'),
-                          SizedBox(width: 10.0),
-                          Text('3D',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      )
+                      Text(widget.entry.FilmAdi,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(width: 10.0),
+                      Text(replaceWhitespacesUsingRegex(
+                          widget.entry.Bilgi, '|')),
                     ],
                   ),
-                  SizedBox(width: 20.0),
+                  SizedBox(width: 5.0),
                   Icon(
                     Icons.keyboard_arrow_right,
-                    size: 30.0,
+                    size: 24.0,
                     color: Colors.black,
                   )
                 ],
               ),
             ),
-            // Center(child: Image.asset('lib/views/inc.jpg')),
             Padding(
               padding: EdgeInsets.all(5.0),
-              child: Column(
+              child: Wrap(
+                alignment: WrapAlignment.center,
                 children: <Widget>[
-                  // First Seat Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20),
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20),
-                      ),
-                    ],
-                  ),
-                  // Second Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(
-                        isReserved: true,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                    ],
-                  ),
-                  // Third  Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(
-                        isReserved: true,
-                      ),
-                      CienmaSeat(
-                        isReserved: true,
-                      ),
-                    ],
-                  ),
-                  // 4TH Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(
-                        isReserved: true,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                    ],
-                  ),
-                  // 5TH Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                    ],
-                  ),
-                  // 6TH Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                    ],
-                  ),
-                  // final Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20),
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20) * 2,
-                      ),
-                      CienmaSeat(),
-                      CienmaSeat(),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 20),
-                      ),
-                    ],
-                  ),
+                  StreamBuilder<List<Koltuk>>(
+                      stream: FirestroeService.readKoltuk(widget.entry.Salon),
+                      builder: (context, snapshot) {
+                        return Column(
+                            children: widget.getRandomWidgetArray(snapshot));
+                      })
                 ],
               ),
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0),
-                    child: Text(
-                      '30\$',
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0),
+                  child: Text(
+                    "1",
+                    style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                    decoration: BoxDecoration(
-                        color: Colors.greenAccent,
-                        borderRadius:
-                            BorderRadius.only(topLeft: Radius.circular(25.0))),
-                    child: InkWell(
-                        child: Text('Pay',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold))),
-                  )
-                ],
-              ),
-            )
+                ),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                  decoration: BoxDecoration(
+                      color: Colors.greenAccent,
+                      borderRadius:
+                          BorderRadius.only(topLeft: Radius.circular(25.0))),
+                  child: InkWell(
+                      onTap: () {
+                        firestoreInstance.collection("Koltuk").add({
+                          "Doluluk": false,
+                          "KoltukId": abcd.toString(),
+                          "SalonId": "4",
+                          "KoltukNo": cbc.toString()
+                        }).then((value) {
+                          print(value.id);
+                        });
+                        abcd++;
+                        cbc++;
+                        print(cbc.toString());
+                        print(abcd.toString());
+                      },
+                      child: Text('Pay',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold))),
+                )
+              ],
+            ),
           ],
         ),
       ),
     );
   }
+
+  /* Widget _buildRow(BuildContext context) {
+    return Column(children: widget.getRandomWidgetArray());
+  }*/
 }
+
+String replaceWhitespacesUsingRegex(String s, String replace) {
+  if (s == null) {
+    return null;
+  }
+  final pattern = RegExp('\\s+');
+  return s.replaceAll(pattern, replace);
+}
+
+/*return InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () {
+        setState(() {
+          !widget.isReserved ? widget.isSelected = !widget.isSelected : null;
+        });
+      }, */

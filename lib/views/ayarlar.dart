@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sinemabilet/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class ayarlar extends StatelessWidget {
   static Route<dynamic> route() => MaterialPageRoute(
@@ -76,7 +78,9 @@ class ayarlar extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Çıkış'),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () {
+                  context.read<AuthenticationService>().signOut();
+                },
               ),
             ],
           ),

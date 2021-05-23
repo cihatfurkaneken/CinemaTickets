@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fancy_bottom_bar/fancy_bottom_bar.dart';
+import 'package:sinemabilet/models/Film.dart';
+import 'package:sinemabilet/services/firestore_service.dart';
 import 'package:sinemabilet/views/bilet.dart';
 import 'package:sinemabilet/views/populer.dart';
+
+import 'BiletSecimi.dart';
 
 class anaekran extends StatefulWidget {
   static Route<dynamic> route() => MaterialPageRoute(
@@ -57,15 +61,6 @@ class _anaekranState extends State<anaekran> {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Yeni Çıkanlar",
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Divider(),
-                  biletal(),
-                  Text(
                     "Popüler Filmler",
                     style: TextStyle(
                         color: Colors.black54,
@@ -73,50 +68,95 @@ class _anaekranState extends State<anaekran> {
                         fontWeight: FontWeight.bold),
                   ),
                   Divider(),
-                  Padding(
-                    padding: EdgeInsets.all(25),
-                    child: Container(
-                      width: double.infinity,
-                      //color: Colors.red,
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              populer(
-                                pictureUrl: movi[0],
-                                title: 'Interstellar',
-                              ),
-                              SizedBox(width: genislik * 0.12),
-                              populer(
-                                pictureUrl: movi[1],
-                                title: 'adsfasdf',
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: <Widget>[
-                              populer(
-                                pictureUrl: movi[2],
-                                title: 'sdfgsdfg',
-                              ),
-                              SizedBox(width: genislik * 0.12),
-                              populer(
-                                pictureUrl: movi[3],
-                                title: 'qweqweq',
-                              ),
-                            ],
-                          )
-                        ],
+                  biletal(),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(1),
+                      color: Colors.black87,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x29000000),
+                          offset: Offset(0, 6),
+                          blurRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "Yeni Çıkanlar",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  Text(
-                    "Bilet Satın almak için filmin üstüne tıklayın.",
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                  Divider(),
+                  StreamBuilder<List<Film>>(
+                      stream: FirestroeService.readFilms(),
+                      builder: (context, snapshot) {
+                        return Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Container(
+                            //width: double.infinity,
+                            //color: Colors.red,
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 10),
+                                    populer(
+                                        pictureUrl: snapshot.data[0].resim,
+                                        title: snapshot.data[0].FilmAdi,
+                                        entry: snapshot.data[0]),
+                                    SizedBox(width: 25),
+                                    populer(
+                                        pictureUrl: snapshot.data[2].resim,
+                                        title: snapshot.data[2].FilmAdi,
+                                        entry: snapshot.data[2]),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 10),
+                                    populer(
+                                      pictureUrl: snapshot.data[3].resim,
+                                      title: snapshot.data[3].FilmAdi,
+                                      entry: snapshot.data[3],
+                                    ),
+                                    SizedBox(width: 25),
+                                    populer(
+                                        pictureUrl: snapshot.data[1].resim,
+                                        title: snapshot.data[1].FilmAdi,
+                                        entry: snapshot.data[1]),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(1),
+                      color: Colors.black87,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "Bilet Satın almak için filmin üstüne tıklayın.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                 ],
               ),
