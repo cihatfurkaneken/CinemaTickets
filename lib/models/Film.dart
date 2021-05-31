@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 
 class Film {
@@ -8,12 +6,14 @@ class Film {
   final String Bilgi;
   final String resim;
   final String Salon;
+  final String Sure;
   Film(
       {@required this.FilmId,
       this.FilmAdi,
       this.Bilgi,
       this.resim,
-      this.Salon});
+      this.Salon,
+      this.Sure});
 
   static Film fromJson(Map<String, dynamic> json) => Film(
         FilmId: json['FilmId'],
@@ -21,6 +21,7 @@ class Film {
         Bilgi: json['Bilgi'],
         resim: json['resim'],
         Salon: json['Salon'],
+        Sure: json['Sure'],
       );
 
   Map<String, dynamic> toMap() {
@@ -29,7 +30,8 @@ class Film {
       'FilmAdi': FilmAdi,
       'Bilgi': Bilgi,
       'resim': resim,
-      'Salon': Salon
+      'Salon': Salon,
+      'Sure': Sure
     };
   }
 }

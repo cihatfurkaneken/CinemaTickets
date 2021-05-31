@@ -1,47 +1,26 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 
 class Kullanici {
-  final int KullaniciId;
-  final String KullaniciAdi;
-  final String Sifre;
+  final String KullaniciId;
   final String Adi;
-  final String Soyadi;
-  final String Telefon;
+
+  final String mail;
   Kullanici({
     @required this.KullaniciId,
-    this.KullaniciAdi,
-    this.Sifre,
     this.Adi,
-    this.Soyadi,
-    this.Telefon,
+    this.mail,
   });
+  static Kullanici fromJson(Map<String, dynamic> json) => Kullanici(
+        KullaniciId: json['KullaniciId'],
+        Adi: json['Isim'],
+        mail: json['Mail'],
+      );
 
   Map<String, dynamic> toMap() {
     return {
       'KullaniciId': KullaniciId,
-      'KullaniciAdi': KullaniciAdi,
-      'Sifre': Sifre,
-      'Adi': Adi,
-      'Soyadi': Soyadi,
-      'Telefon': Telefon,
+      'Isim': Adi,
+      'Mail': mail,
     };
   }
-
-  factory Kullanici.fromMap(Map<String, dynamic> map) {
-    return Kullanici(
-      KullaniciId: map['KullaniciId'],
-      KullaniciAdi: map['KullaniciAdi'],
-      Sifre: map['Sifre'],
-      Adi: map['Adi'],
-      Soyadi: map['Soyadi'],
-      Telefon: map['Telefon'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Kullanici.fromJson(String source) =>
-      Kullanici.fromMap(json.decode(source));
 }

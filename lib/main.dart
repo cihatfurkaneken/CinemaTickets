@@ -13,7 +13,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -24,10 +23,12 @@ class MyApp extends StatelessWidget {
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
+          initialData: null,
         )
       ],
       child: MaterialApp(
-        title: 'SineBilet',
+        debugShowCheckedModeBanner: false,
+        title: 'DuzceSinema',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,

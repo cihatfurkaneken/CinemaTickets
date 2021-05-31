@@ -1,25 +1,34 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:sinemabilet/services/auth_service.dart';
-import 'package:sinemabilet/views/kayit.dart';
 
-class giris extends StatefulWidget {
-  static Route<dynamic> route() => MaterialPageRoute(
-        builder: (context) => giris(),
-      );
+class Kayit extends StatefulWidget {
   @override
-  _girisState createState() => _girisState();
+  _KayitState createState() => _KayitState();
 }
 
-class _girisState extends State<giris> {
+class _KayitState extends State<Kayit> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  bool goster = true;
-  bool _load = false;
-  final TextEditingController emailController = TextEditingController();
 
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController isimController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String getCurrentUser() {
+    final User user = firebaseAuth.currentUser;
+    final uid = user.uid;
+    return uid;
+  }
+
+  String getCurrentMail() {
+    final User user = firebaseAuth.currentUser;
+    final uid = user.email;
+    return uid;
+  }
+
   @override
   Widget build(BuildContext context) {
     double genislik = MediaQuery.of(context).size.width;
@@ -30,16 +39,17 @@ class _girisState extends State<giris> {
         child: SingleChildScrollView(
           reverse: true,
           child: Container(
-            //Sayfayı kapsayan widget
             child: Column(
               children: <Widget>[
                 Padding(
-                    padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
-                    child: Image.asset("lib/assets/logo.png")),
+                  padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+                  child: Text("Kayıt Ol",
+                      style: TextStyle(fontSize: 34, color: Colors.black)),
+                ),
                 SizedBox(height: 30),
                 Container(
                   width: genislik * 0.75,
-                  height: yukseklik * 0.55,
+                  height: yukseklik * 0.5,
                   child: Form(
                     child: Column(
                       key: _formKey,
@@ -56,11 +66,40 @@ class _girisState extends State<giris> {
                               padding:
                                   EdgeInsets.only(left: 15, right: 15, top: 5),
                               child: TextFormField(
-                                // Kullaıncı adının girildiği kısım
+                                controller: isimController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  labelText: 'İsim Soyisim',
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    final snackBar = SnackBar(
+                                        content: Text(
+                                            'Lütfen Boş kısım bırakmayın.'));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: new BorderRadius.circular(19.0),
+                            ),
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(left: 15, right: 15, top: 5),
+                              child: TextFormField(
                                 controller: emailController,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  labelText: 'Kullanıcı Adı',
+                                  labelText: 'E-Mail',
                                 ),
                               ),
                             ),
@@ -81,25 +120,13 @@ class _girisState extends State<giris> {
                                       padding: EdgeInsets.only(
                                           left: 15, right: 15, top: 5),
                                       child: TextFormField(
-                                        // Şifrenin adının girildiği kısım
                                         controller: passwordController,
-                                        obscureText: goster,
+                                        obscureText: true,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
                                           labelText: 'Şifre',
                                         ),
                                       ))),
-                              Positioned(
-                                  right: 15,
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        //Göster butonu
-                                        goster == true
-                                            ? goster = false
-                                            : goster = true;
-                                        setState(() {});
-                                      },
-                                      child: Text('Göster')))
                             ],
                           ),
                         ),
@@ -116,21 +143,29 @@ class _girisState extends State<giris> {
                                 primary: Color(0xffFF7E7E),
                               ),
                               onPressed: () {
-                                //Giriş işlemini gerçekleştiren kodlar
                                 if (emailController.text.isNotEmpty &&
-                                    passwordController.text.isNotEmpty) {
+                                    passwordController.text.isNotEmpty &&
+                                    isimController.text.isNotEmpty) {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(new SnackBar(
                                     duration: new Duration(seconds: 4),
                                     content: new Row(
                                       children: <Widget>[
                                         new CircularProgressIndicator(),
-                                        new Text(" Giriş Yapılıyor..")
+                                        new Text("Kayıt Tamamlanıyor....")
                                       ],
                                     ),
                                   ));
-                                  // Giriş işlemi fonksiyonu çağırılması
-                                  loginAction().whenComplete(() => null);
+                                  loginAction().whenComplete(() {
+                                    var newDocRef = FirebaseFirestore.instance
+                                        .collection('Kullanicilar');
+                                    newDocRef.add({
+                                      'Isim': isimController.text.trim(),
+                                      'KullaniciId': getCurrentUser(),
+                                      'Mail': getCurrentMail(),
+                                    });
+                                  }).then(
+                                      (value) => Navigator.of(context).pop());
                                 } else {
                                   showDialog<String>(
                                     context: context,
@@ -138,7 +173,7 @@ class _girisState extends State<giris> {
                                         AlertDialog(
                                       title: const Text('HATA'),
                                       content: const Text(
-                                          'Giriş kısımları boş olamaz'),
+                                          'Mail ve Şifre kısımları boş olamaz.'),
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () =>
@@ -150,38 +185,23 @@ class _girisState extends State<giris> {
                                   );
                                 }
                               },
-                              child: Text('Giriş',
-                                  style: TextStyle(color: Colors.white)),
+                              child: Text(
+                                'Kayıt Ol',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
-                        Text("Hesabın yok mu ?"),
-                        Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Container(
-                              height: 45,
-                              width: genislik * 0.4,
-                              child: ElevatedButton(
-                                // Kayıt ol butonu
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          new BorderRadius.circular(21.0),
-                                    ),
-                                    primary: Colors.lightBlueAccent),
-                                onPressed: () {
-                                  // Kayıt ol sayfası yönlendirmesi
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => Kayit()));
-                                },
-                                child: Text(
-                                  'Kayıt Ol',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ))
                       ],
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    "Devam ederek tüm kuralları ve sözleşmeleri kabul etmiş sayılırsınz.",
+                    style: TextStyle(fontSize: 14, color: Colors.redAccent),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
@@ -193,9 +213,8 @@ class _girisState extends State<giris> {
   }
 
   Future<String> loginAction() async {
-    // Giriş Yapma Fonksiyonu
     await new Future.delayed(const Duration(seconds: 2));
-    return context.read<AuthenticationService>().signIn(
+    return context.read<AuthenticationService>().signUp(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );

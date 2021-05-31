@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 class ShowTime extends StatefulWidget {
   bool isActive;
 
-  final int price;
-
   final String time;
 
-  ShowTime(
-      {@required this.time,
-      @required this.price,
-      @required this.isActive = false});
+  ShowTime({@required this.time, @required this.isActive = false});
 
   @override
   _ShowTimeState createState() => _ShowTimeState();

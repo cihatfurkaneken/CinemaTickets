@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fancy_bottom_bar/fancy_bottom_bar.dart';
 import 'package:sinemabilet/models/Film.dart';
@@ -17,27 +18,18 @@ class anaekran extends StatefulWidget {
 
 class _anaekranState extends State<anaekran> {
   int selectedPos = 0;
-  final List<String> movi = [
-    "lib/views/images/joker.jpg",
-    "lib/views/images/togo.jpg",
-    "lib/views/images/int.jpg",
-    "lib/views/images/inc.jpg"
-  ];
-
-  final tabItems = [
-    FancyBottomItem(title: Text("Satın Al"), icon: Icon(Icons.theaters)),
-    FancyBottomItem(title: Text("Sinemalar"), icon: Icon(Icons.theater_comedy)),
-    FancyBottomItem(title: Text("Filmler"), icon: Icon(Icons.movie)),
-    FancyBottomItem(title: Text("Profil"), icon: Icon(Icons.person)),
-  ];
+  int abc = 0;
+  int cbc = 10;
   @override
   Widget build(BuildContext context) {
     double genislik = MediaQuery.of(context).size.width;
     double yukseklik = MediaQuery.of(context).size.height;
     return Scaffold(
         appBar: PreferredSize(
+          //YUKARIDA BULUNAN SİYAH BAR
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Color(0xff434852),
             elevation: 3.0,
             shape: RoundedRectangleBorder(
@@ -47,7 +39,7 @@ class _anaekranState extends State<anaekran> {
               ),
             ),
             centerTitle: true,
-            title: tabItems[selectedPos].title,
+            title: Text("Ana Ekran"),
           ),
         ),
         body: SingleChildScrollView(
@@ -57,8 +49,6 @@ class _anaekranState extends State<anaekran> {
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Column(
-                // mainAxisSize: MainAxisSize.max,
-                // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     "Popüler Filmler",
@@ -68,7 +58,7 @@ class _anaekranState extends State<anaekran> {
                         fontWeight: FontWeight.bold),
                   ),
                   Divider(),
-                  biletal(),
+                  biletal(), //Popüler filmlerin bulunduğu kısmın çağırılması.
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -96,27 +86,27 @@ class _anaekranState extends State<anaekran> {
                   ),
                   Divider(),
                   StreamBuilder<List<Film>>(
+                      // Yeni çıkanlar kısmının Firebase üzerinden çekilip sınıflara atılması
+                      // ve gösterilmesi. Burada snapshot, filmlerin içeriklerini içeren sınıfı temsil eder
                       stream: FirestroeService.readFilms(),
                       builder: (context, snapshot) {
                         return Padding(
                           padding: EdgeInsets.all(10),
                           child: Container(
-                            //width: double.infinity,
-                            //color: Colors.red,
                             child: Column(
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
                                     SizedBox(width: 10),
                                     populer(
-                                        pictureUrl: snapshot.data[0].resim,
-                                        title: snapshot.data[0].FilmAdi,
-                                        entry: snapshot.data[0]),
+                                        pictureUrl: snapshot.data[4].resim,
+                                        title: snapshot.data[4].FilmAdi,
+                                        entry: snapshot.data[4]),
                                     SizedBox(width: 25),
                                     populer(
-                                        pictureUrl: snapshot.data[2].resim,
-                                        title: snapshot.data[2].FilmAdi,
-                                        entry: snapshot.data[2]),
+                                        pictureUrl: snapshot.data[5].resim,
+                                        title: snapshot.data[5].FilmAdi,
+                                        entry: snapshot.data[5]),
                                   ],
                                 ),
                                 SizedBox(height: 20),
@@ -130,11 +120,12 @@ class _anaekranState extends State<anaekran> {
                                     ),
                                     SizedBox(width: 25),
                                     populer(
-                                        pictureUrl: snapshot.data[1].resim,
-                                        title: snapshot.data[1].FilmAdi,
-                                        entry: snapshot.data[1]),
+                                        pictureUrl: snapshot.data[2].resim,
+                                        title: snapshot.data[2].FilmAdi,
+                                        entry: snapshot.data[2]),
                                   ],
-                                )
+                                ),
+                                SizedBox(height: 20),
                               ],
                             ),
                           ),

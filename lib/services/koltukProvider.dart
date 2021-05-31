@@ -31,10 +31,4 @@ class koltukProvider with ChangeNotifier {
     _KoltukId = KoltukId;
     notifyListeners();
   }
-
-  Kaydet() {
-    var yeniKayit = Koltuk(
-        SalonId: "1", KoltukNo: _KoltukNo, KoltukId: _KoltukId, Doluluk: false);
-    firestoreService.setEntry(yeniKayit);
-  }
 }

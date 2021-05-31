@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sinemabilet/models/Sinema.dart';
-import 'package:sinemabilet/models/person.dart';
+import 'package:sinemabilet/models/Film.dart';
 import 'package:sinemabilet/services/firestore_service.dart';
 import 'package:sinemabilet/views/sinemadetay.dart';
 //import 'package:sinemabilet/views/anaekran.dart';
@@ -10,85 +9,15 @@ class sinema extends StatelessWidget {
   static Route<dynamic> route() => MaterialPageRoute(
         builder: (context) => sinema(),
       );
-  List<Person> persons = [
-    Person(
-        name: 'Site Sinemaları',
-        profileImg: 'lib/views/images/sinema.jpg',
-        bio: "Yemek, VMAX, Dolby, 3D"),
-    Person(
-        name: 'CineMaximum Akasya',
-        profileImg: 'lib/views/images/inc.jpg',
-        bio: "3D, Popcorn, Çift Koltuk"),
-    Person(
-        name: 'CinemaVip Bakırköy',
-        profileImg: 'lib/views/images/togo.jpg',
-        bio: "DMAX, 3D ,Konfor "),
-    Person(
-        name: 'Gebze Sinemaları',
-        profileImg: 'lib/views/images/int.jpg',
-        bio: "Yemek, VMAX, Dolby, 3Dr "),
-    Person(
-        name: 'Site Sinemaları',
-        profileImg: 'lib/views/images/sinema.jpg',
-        bio: "Yemek, VMAX, Dolby, 3D"),
-    Person(
-        name: 'Site Sinemaları',
-        profileImg: 'lib/views/images/sinema.jpg',
-        bio: "Yemek, VMAX, Dolby, 3D"),
-  ];
-  Widget personDetailCard(Person, BuildContext context) {
-    final CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection('Sinema');
-    return InkWell(
-      onTap: () => Navigator.of(context).push(
-        sinemadetay.route(),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Card(
-          color: Color(0xffffffff),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(Person.profileImg)))),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      Person.name,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    Text(
-                      Person.bio,
-                      style: TextStyle(color: Colors.black, fontSize: 12),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    double genislik = MediaQuery.of(context).size.width;
+    double yukseklik = MediaQuery.of(context).size.height;
     final CollectionReference collectionReference =
         FirebaseFirestore.instance.collection('Sinema');
     return Scaffold(
       appBar: PreferredSize(
+        // YUKARIDAKİ SİYAH BAR
         preferredSize: Size.fromHeight(40.0),
         child: AppBar(
           backgroundColor: Color(0xff434852),
@@ -100,11 +29,13 @@ class sinema extends StatelessWidget {
             ),
           ),
           centerTitle: true,
-          title: Text("Sinemalar"),
+          title: Text("Vizyondakiler"),
         ),
       ),
-      body: StreamBuilder<List<Sinema>>(
-          stream: FirestroeService.readTodos(),
+      body: StreamBuilder<List<Film>>(
+          // Filmlerin Firebase üzerinden çekilip sınıflara atılmasıve gösterilmesi.
+          // Burada snapshot, filmlerin içeriklerini içeren sınıfı temsil eder
+          stream: FirestroeService.readFilms(),
           builder: (context, snapshot) {
             return ListView.builder(
                 itemCount: snapshot.data.length,
@@ -112,73 +43,82 @@ class sinema extends StatelessWidget {
                   return Column(
                     children: <Widget>[
                       InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  sinemadetay(entry: snapshot.data[index])));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Card(
-                            color: Color(0xffffffff),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: 100.0,
-                                      height: 100.0,
+                          onTap: () {
+                            //Tıklanan filmin detaylarına gidiş fonksiyonu
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    sinemadetay(entry: snapshot.data[index])));
+                          },
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Card(
+                                  color: Color(0xffffffff),
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Row(children: <Widget>[
+                                    Container(
                                       decoration: new BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                              snapshot.data[index].resim),
+                                        color: Color(0xffFF7E7E),
+                                        borderRadius: new BorderRadius.only(
+                                            topLeft: const Radius.circular(10),
+                                            bottomLeft:
+                                                const Radius.circular(10)),
+                                      ),
+                                      height: yukseklik * 0.17,
+                                      width: genislik * 0.04,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        width: 100.0,
+                                        height: 100.0,
+                                        decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                snapshot.data[index].resim),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
+                                    Container(
+                                        width: genislik * 0.4,
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                snapshot.data[index].FilmAdi,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 24),
+                                              ),
+                                              Text(
+                                                snapshot.data[index].Bilgi,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 12),
+                                              )
+                                            ])),
+                                    Row(children: <Widget>[
                                       Text(
-                                        snapshot.data[index].SinemaAdi,
+                                        "Detay",
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 18),
+                                            color: Colors.black, fontSize: 16),
                                       ),
-                                      Text(
-                                        snapshot.data[index].Bilgi,
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 24,
                                       )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
+                                    ])
+                                  ]))))
                     ],
                   );
                 });
           }),
-
-      /*child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 50, 10, 10),
-          child: Column(
-            children: <Widget>[
-              Column(
-                children: persons.map((p) {
-                  return personDetailCard(p, context);
-                }).toList(),
-              )
-            ],
-          ),
-        ),*/
     );
   }
 }

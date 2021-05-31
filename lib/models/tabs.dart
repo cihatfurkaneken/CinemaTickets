@@ -25,7 +25,7 @@ class TabNavigationItem {
         TabNavigationItem(
           page: sinema(),
           icon: Icon(Icons.theaters),
-          title: "Sinemalar",
+          title: "Vizyondakiler",
         ),
         TabNavigationItem(
           page: ayarlar(),

@@ -14,8 +14,6 @@ class CienmaSeat extends StatefulWidget {
 class _CienmaSeatState extends State<CienmaSeat> {
   @override
   Widget build(BuildContext context) {
-    //!widget.isReserved ? widget.isSelected = !widget.isSelected : null;
-
     return InkWell(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,

@@ -1,45 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sinemabilet/components/calendar_day.dart';
 import 'package:sinemabilet/components/cienma_seat.dart';
-import 'package:sinemabilet/components/show_time.dart';
 import 'package:intl/intl.dart';
+import 'package:sinemabilet/models/Dolu.dart';
 import 'package:sinemabilet/models/Film.dart';
 import 'package:sinemabilet/models/Koltuk.dart';
-import 'package:sinemabilet/models/Sinema.dart';
 import 'package:sinemabilet/services/firestore_service.dart';
+import 'package:sinemabilet/views/BiletDetay.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class BiletSecimi extends StatefulWidget {
   static Route<dynamic> route() => MaterialPageRoute(
         builder: (context) => BiletSecimi(),
       );
-  bool secilen;
-  bool secilmeyen;
+
   final Film entry;
   BiletSecimi({this.entry});
-
-  List<Widget> getRandomWidgetArray(AsyncSnapshot<List<Koltuk>> snapshot) {
-    List<Widget> lines = [];
-    int satir = 1;
-    for (var i = 1; i <= 1; i++) {
-      List<Widget> gameCells = [];
-      for (var j = 1; j < snapshot.data.length; j++) {
-        gameCells.add(CienmaSeat(
-            numara: snapshot.data[satir].KoltukNo,
-            isReserved: snapshot.data[satir].Doluluk));
-        satir++;
-      }
-      lines.add(Wrap(children: gameCells));
-    }
-    return lines;
-  }
 
   @override
   _BiletSecimiState createState() => _BiletSecimiState();
 }
 
 getCurrentDate(int i) {
-  final now = DateTime.now();
+  //GÜNCEL TARİHİ ALMA FONKSİYONU
+  var now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day + i);
   return DateFormat('dd').format(today);
 }
@@ -49,11 +33,19 @@ class _BiletSecimiState extends State<BiletSecimi> {
       border: Border.all(color: Colors.white54, width: .5),
       borderRadius: BorderRadius.circular(15.0));
   final firestoreInstance = FirebaseFirestore.instance;
-  int abcd = 9;
-  int cbc = 10;
-  String _selectedLocation; // Option 2
+  //SEÇİLEN KOLTUKLARI GÜNÜ VE SEANSI TUTAN DEĞİŞKENLER
+  List<String> savedWords = [];
+  List<String> koltukIds = [];
+  int fiyat = 0;
+  int selectedIndex;
+  int selectedIndex2;
+  List<String> Seans = ["11:00", "14.30", "18:00", "21:00", "23:30"];
+  String secilenSeans;
+  String secilenGun;
+
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('tr');
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40.0),
@@ -67,12 +59,10 @@ class _BiletSecimiState extends State<BiletSecimi> {
             ),
           ),
           centerTitle: true,
-          title: Text("Satın Al"),
+          title: Text("Bilet Seçimi"),
         ),
       ),
       body: SingleChildScrollView(
-        //scrollDirection: Axis.vertical,
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
@@ -91,105 +81,102 @@ class _BiletSecimiState extends State<BiletSecimi> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 10.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: <Widget>[
-                      CalendarDay(
-                        dayNumber: getCurrentDate(0),
-                        isActive: true,
-                      ),
-                      CalendarDay(
-                        dayNumber: getCurrentDate(1),
-                      ),
-                      CalendarDay(
-                        dayNumber: getCurrentDate(2),
-                      ),
-                      CalendarDay(
-                        dayNumber: getCurrentDate(3),
-                      ),
-                      CalendarDay(
-                        dayNumber: getCurrentDate(4),
-                      ),
-                      CalendarDay(
-                        dayNumber: getCurrentDate(5),
-                      ),
-                      CalendarDay(
-                        dayNumber: getCurrentDate(6),
-                      ),
-                    ],
-                  ),
-                ),
+                child: Container(
+                    height: MediaQuery.of(context).size.height * 0.09,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 7,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                setState(() {
+                                  selectedIndex = index;
+                                  // SEÇİLEN TARİHİ TUTAN DEĞİŞKENE ATIYOR
+                                });
+                              },
+                              child: Container(
+                                width: 50.0,
+                                height: 65.0,
+                                decoration: BoxDecoration(
+                                    color: selectedIndex == index
+                                        ? Color(0xff434852)
+                                        : null,
+                                    borderRadius: BorderRadius.circular(15.0)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(getCurrentDate(index).toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 25.0,
+                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      getTarih().toUpperCase(),
+                                      style: TextStyle(
+                                        color: selectedIndex == index
+                                            ? Colors.white54
+                                            : Colors.white54,
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        })),
               ),
             ),
             Center(child: Text("Seans Seçimi")),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: <Widget>[
-                  ShowTime(
-                    time: '11:00',
-                    price: 5,
-                    isActive: false,
-                  ),
-                  ShowTime(
-                    time: '12:30',
-                    price: 10,
-                    isActive: true,
-                  ),
-                  ShowTime(
-                    time: '15:30',
-                    price: 10,
-                    isActive: false,
-                  ),
-                  ShowTime(
-                    time: '19:30',
-                    price: 10,
-                    isActive: false,
-                  ),
-                  ShowTime(
-                    time: '21:30',
-                    price: 10,
-                    isActive: false,
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: StreamBuilder<List<Sinema>>(
-                  stream: FirestroeService.readTodos(),
-                  builder: (context, snapshot) {
-                    List<DropdownMenuItem> currencyItems = [];
-                    for (int i = 0; i < snapshot.data.length; i++) {
-                      Sinema snap = snapshot.data[i];
-                      currencyItems.add(
-                        DropdownMenuItem(
-                          child: Text(
-                            snap.SinemaAdi,
-                            style: TextStyle(color: Color(0xff11b719)),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              child: Container(
+                  height: MediaQuery.of(context).size.height * 0.09,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            setState(() {
+                              selectedIndex2 = index;
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(10.0),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 25.0, vertical: 10.0),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: selectedIndex2 == index
+                                        ? Colors.red
+                                        : Color(0xff434852)),
+                                borderRadius: BorderRadius.circular(15.0)),
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  Seans[index].toString(),
+                                  style: TextStyle(
+                                      color: selectedIndex2 == index
+                                          ? Colors.red
+                                          : Color(0xff434852),
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
-                          value: "${snap.SinemaAdi}",
-                        ),
-                      );
-                    }
-                    return DropdownButton(
-                      items: currencyItems,
-                      icon: const Icon(Icons.arrow_downward),
-                      elevation: 16,
-                      underline: Container(
-                        height: 2,
-                        color: Colors.redAccent,
-                      ),
-                      hint: Text('Sinema Seçiniz'),
-                      value: _selectedLocation,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedLocation = newValue;
-                        });
-                        print(_selectedLocation);
-                      },
-                    );
-                  }),
+                        );
+                      })),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
@@ -204,14 +191,17 @@ class _BiletSecimiState extends State<BiletSecimi> {
                   SizedBox(width: 10.0),
                   Row(
                     children: <Widget>[
-                      Text(widget.entry.FilmAdi,
+                      Text(
+                          widget.entry
+                              .FilmAdi, // Seçilen filmin adını sınıftan alıyor
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold)),
                       SizedBox(width: 10.0),
-                      Text(replaceWhitespacesUsingRegex(
-                          widget.entry.Bilgi, '|')),
+                      Text(replaceWhitespacesUsingRegex(widget.entry.Bilgi,
+                          '|')), //Seçilen filmin bilgilerini sınıftan alıyor
+                      Text(" | Salon " + widget.entry.Salon),
                     ],
                   ),
                   SizedBox(width: 5.0),
@@ -223,62 +213,199 @@ class _BiletSecimiState extends State<BiletSecimi> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                children: <Widget>[
-                  StreamBuilder<List<Koltuk>>(
-                      stream: FirestroeService.readKoltuk(widget.entry.Salon),
-                      builder: (context, snapshot) {
-                        return Column(
-                            children: widget.getRandomWidgetArray(snapshot));
-                      })
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0),
-                  child: Text(
-                    "1",
-                    style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
+            if (selectedIndex != null && selectedIndex2 != null)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: StreamBuilder<List<Koltuk>>(
+                    stream: FirestroeService.readKoltuk(widget.entry.Salon),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return snapshot.data.isNotEmpty
+                          ? GridView.builder(
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 10,
+                              ),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                return StreamBuilder<List<Dolu>>(
+                                    stream: FirestroeService.readDolu(
+                                        snapshot.data[index].docId,
+                                        selectedIndex.toString()),
+                                    //Koltukları seçilen seansa ve tarihe göre veritabanından çekme işlemi
+                                    builder: (c, sn) {
+                                      bool isReserved =
+                                          sn.data[selectedIndex2].dolu;
+                                      // Eğer veritabanında koltuk dolu olarak işaretlenmişse siyaha boyanması için gerekli değer
+                                      String word =
+                                          snapshot.data[index].KoltukNo;
+                                      bool isSelected =
+                                          savedWords.contains(word);
+                                      return sn.data.isNotEmpty
+                                          ? InkWell(
+                                              splashColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () {
+                                                setState(() {
+                                                  if (!isReserved) {
+                                                    //EĞER KOLTUK DOLU DEĞİLSE
+                                                    if (isSelected) {
+                                                      savedWords.remove(word);
+                                                      koltukIds.remove(snapshot
+                                                          .data[index]
+                                                          .KoltukId);
+                                                      fiyat -= 15;
+                                                      //TIKLANAN KOLTUĞU SEÇİLEN KOLTUKLAR LİSTESİNE EKLE VE FİYATI ARTTIR
+                                                      //EĞER FİLM GERİ BIRAKILIRSA LİSTEDEN ÇIKAR VE FİYATI AZALT
+                                                    } else {
+                                                      savedWords.add(word);
+                                                      koltukIds.add(snapshot
+                                                          .data[index]
+                                                          .KoltukId);
+                                                      fiyat += 15;
+                                                    }
+                                                  } else
+                                                    null;
+                                                });
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 5.0,
+                                                    vertical: 5.0),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    15,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    15,
+                                                decoration: BoxDecoration(
+                                                    color: isSelected
+                                                        ? Colors.redAccent
+                                                        //KOLTUK SEÇİLİRSE KIRMIZI YAP
+                                                        : isReserved
+                                                            //KOLTUK REZERVELİYSE SİYAH YAP
+                                                            ? Colors.black
+                                                            : null,
+                                                    border: !isSelected &&
+                                                            !isReserved
+                                                        ? Border.all(
+                                                            color: Colors.black,
+                                                            width: 1.0)
+                                                        : null,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0)),
+                                                child: Text(
+                                                  snapshot.data[index].KoltukNo,
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: isSelected
+                                                          ? Colors.white
+                                                          : Colors.black),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ))
+                                          : Text("No Data");
+                                    });
+                              })
+                          : Text('No Data');
+                    },
                   ),
                 ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                  decoration: BoxDecoration(
-                      color: Colors.greenAccent,
-                      borderRadius:
-                          BorderRadius.only(topLeft: Radius.circular(25.0))),
-                  child: InkWell(
-                      onTap: () {
-                        firestoreInstance.collection("Koltuk").add({
-                          "Doluluk": false,
-                          "KoltukId": abcd.toString(),
-                          "SalonId": "4",
-                          "KoltukNo": cbc.toString()
-                        }).then((value) {
-                          print(value.id);
-                        });
-                        abcd++;
-                        cbc++;
-                        print(cbc.toString());
-                        print(abcd.toString());
-                      },
-                      child: Text('Pay',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold))),
-                )
-              ],
+              ),
+            if (selectedIndex != null && selectedIndex2 != null)
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Seçili:"),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                      width: MediaQuery.of(context).size.width / 15,
+                      height: MediaQuery.of(context).size.width / 15,
+                      decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(5.0)),
+                    ),
+                    Text("Dolu:"),
+                    CienmaSeat(
+                      isReserved: true,
+                      numara: "0",
+                    ),
+                    Text("Boş:"),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                      width: MediaQuery.of(context).size.width / 15,
+                      height: MediaQuery.of(context).size.width / 15,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black, width: 1.0),
+                          borderRadius: BorderRadius.circular(5.0)),
+                    )
+                  ]),
+            Divider(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  if (fiyat > 0)
+                    //EĞER KOLTUK SEÇİLDİYSE FİYAT KISMI VE SATIN AL BUTONU GÖZÜKECEKTİR
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25.0),
+                      child: Text(
+                        fiyat.toString() + "TL",
+                        style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                    ),
+                  if (fiyat > 0)
+                    //EĞER KOLTUK SEÇİLDİYSE FİYAT KISMI VE SATIN AL BUTONU GÖZÜKECEKTİR
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      decoration: BoxDecoration(
+                          color: Color(0xff434852),
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: InkWell(
+                          onTap: () {
+                            //SEÇİLEN TÜM BİLGİLERİ DETAY SAYFASINA YOLLAYAN KODLAR
+                            if (savedWords.length != 0) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => BiletDetay(
+                                        koltuklar: savedWords,
+                                        fiyat: fiyat.toString(),
+                                        gun: getCurrentDate(selectedIndex)
+                                            .toString(),
+                                        seans: Seans[selectedIndex2].toString(),
+                                        tarih: getTarih().toString(),
+                                        film: widget.entry,
+                                        koltukIds: koltukIds,
+                                        secilenSeans: selectedIndex2.toString(),
+                                        secilenTarih: selectedIndex.toString(),
+                                      )));
+                            }
+                          },
+                          child: Text('Satın Al',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold))),
+                    )
+                ],
+              ),
             ),
           ],
         ),
@@ -286,9 +413,11 @@ class _BiletSecimiState extends State<BiletSecimi> {
     );
   }
 
-  /* Widget _buildRow(BuildContext context) {
-    return Column(children: widget.getRandomWidgetArray());
-  }*/
+  getTarih() {
+    final now = DateTime.now();
+
+    return DateFormat.MMMM('tr_TR').format(now);
+  }
 }
 
 String replaceWhitespacesUsingRegex(String s, String replace) {
@@ -298,12 +427,3 @@ String replaceWhitespacesUsingRegex(String s, String replace) {
   final pattern = RegExp('\\s+');
   return s.replaceAll(pattern, replace);
 }
-
-/*return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      onTap: () {
-        setState(() {
-          !widget.isReserved ? widget.isSelected = !widget.isSelected : null;
-        });
-      }, */

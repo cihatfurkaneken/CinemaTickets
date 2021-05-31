@@ -1,11 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sinemabilet/models/Kullanici.dart';
 import 'package:sinemabilet/services/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:sinemabilet/services/firestore_service.dart';
+import 'package:sinemabilet/views/Biletlerim.dart';
 
 class ayarlar extends StatelessWidget {
   static Route<dynamic> route() => MaterialPageRoute(
         builder: (context) => ayarlar(),
       );
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String getCurrentUser() {
+    final User user = firebaseAuth.currentUser;
+    final uid = user.uid;
+    return uid;
+  } //GİRİŞ YAPMIŞ KULLANICININ BİLGİLERİNİN ALINMASI FONKSİYONU
+
   @override
   Widget build(BuildContext context) {
     double genislik = MediaQuery.of(context).size.width;
@@ -32,14 +44,16 @@ class ayarlar extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             padding: EdgeInsets.all(15),
-            //color: Color(0xffFF7E7E),
             height: yukseklik * 0.10,
             width: double.infinity,
-            child: Text(
-              "Hoş Geldin Cihat Furkan Eken",
-              style: TextStyle(fontSize: 22, color: Colors.white),
-              //textAlign: TextAlign.center,
-            ),
+            child: StreamBuilder<List<Kullanici>>(
+                stream: FirestroeService.readKullanici(getCurrentUser()),
+                builder: (context, snapshot) {
+                  return Text(
+                    "Hoş Geldin " + snapshot.data[0].Adi,
+                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  );
+                }),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Color(0xffFF7E7E),
@@ -54,13 +68,10 @@ class ayarlar extends StatelessWidget {
                 leading: Icon(Icons.confirmation_num),
                 trailing: Icon(Icons.chevron_right),
                 title: Text('Biletlerim'),
-                onTap: () => {},
-              ),
-              ListTile(
-                leading: Icon(Icons.border_color),
-                trailing: Icon(Icons.chevron_right),
-                title: Text('Hata Bildir'),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Biletlerim()));
+                },
               ),
               ListTile(
                 leading: Icon(Icons.info),

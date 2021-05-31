@@ -7,26 +7,29 @@ class Koltuk {
   final String KoltukNo;
   final String SalonId;
   final bool Doluluk;
+  final String docId;
   Koltuk({
-    @required this.KoltukId,
+    this.KoltukId,
     this.KoltukNo,
     this.SalonId,
     this.Doluluk,
+    this.docId,
   });
 
   static Koltuk fromJson(Map<String, dynamic> json) => Koltuk(
-        KoltukId: json['KoltukId'],
-        KoltukNo: json['KoltukNo'],
-        SalonId: json['SalonId'],
-        Doluluk: json['Doluluk'],
-      );
+      KoltukId: json['KoltukId'],
+      KoltukNo: json['KoltukNo'],
+      SalonId: json['SalonId'],
+      Doluluk: json['Doluluk'],
+      docId: json['docId']);
 
   Map<String, dynamic> toMap() {
     return {
-      'FilmId': KoltukId,
-      'FilmAdi': KoltukNo,
+      'KoltukId': KoltukId,
       'SalonId': SalonId,
-      'Doluluk': Doluluk
+      'KoltukNo': KoltukNo,
+      'Doluluk': Doluluk,
+      'docId': docId
     };
   }
 }
