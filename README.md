@@ -43,14 +43,9 @@
 
 <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/user.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/mytickets.jpg?raw=true" alt="drawing" width="200"/>
 
-
-    
-
-
-
 </details>
 
-## Firebase
+## Firebase Firestore
 <details>
   <summary>Click to expand!</summary>
 
@@ -74,3 +69,8 @@
 
 
   </details>
+
+
+### Thank You
+
+  > _The application is designed in Turkish but can be easily modified._
