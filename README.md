@@ -19,9 +19,9 @@
   <summary>Click to expand!</summary>
   
   ## App Screens
-  <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/>
+  <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/>
 
-
+<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/>
     ## Firebase Screens
 
 
