@@ -1,6 +1,6 @@
 # Cinema Ticket Booking App
 
-### Features
+## Features
 - Ticket booking & track tickets
 - Login and Eegister System
 - Date and session selection
@@ -8,8 +8,8 @@
 - Developed with Flutter & Dart
 - Back-end as Firebase
 
-- [Flutter](https://flutter.dev/docs/cookbook)
-- [Firebase](https://firebase.google.com)
+[Flutter](https://flutter.dev/docs/cookbook)
+[Firebase](https://firebase.google.com)
 
 
 
