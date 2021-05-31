@@ -19,10 +19,26 @@
   <summary>Click to expand!</summary>
   
   ## App Screens
-  <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/>
+  - Login & Register
+  <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/register.jpg?raw=true" alt="drawing" width="200"/>
 
-<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/login.jpg?raw=true" alt="drawing" width="200"/>
-    ## Firebase Screens
+- Main & Theaters Screen
+<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/mainscreen.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/theaters.jpg?raw=true" alt="drawing" width="200"/>
+
+- Movie Details
+<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/moviedetails.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/moviedetails2.jpg" alt="drawing" width="200"/>
+
+- Seat Selection
+<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/seat.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/seatselection.jpg?raw=true" alt="drawing" width="200"/>
+
+- Ticket Details
+<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/ticketdetails.jpg?raw=true" alt="drawing" width="200"/> 
+
+- User & My Tickets
+<img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/user.jpg?raw=true" alt="drawing" width="200"/> <img src="https://github.com/cihatfurkaneken/CinemaTickets/blob/master/Screenshots/mytickets.jpg?raw=true" alt="drawing" width="200"/>
+
+    ## Firebase Example
+
 
 
 </details>
